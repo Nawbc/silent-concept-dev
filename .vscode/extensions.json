@@ -1,0 +1,19 @@
+{
+	"recommendations": [
+		"dsznajder.es7-react-js-snippets",
+		"infeng.vscode-react-typescript",
+		"christian-kohler.path-intellisense",
+		"ionutvmi.path-autocomplete",
+		"hanwang.bana",
+		"dbaeumer.vscode-eslint",
+		"streetsidesoftware.code-spell-checker",
+		"visualstudioexptteam.vscodeintellicode",
+		"cssho.vscode-svgviewer",
+		"ms-vscode.sublime-keybindings",
+		"mrmlnc.vscode-scss",
+		"alduncanson.react-hooks-snippets",
+		"esbenp.prettier-vscode",
+		"techer.open-in-browser",
+		"tombonnike.vscode-status-bar-format-toggle"
+	]
+}

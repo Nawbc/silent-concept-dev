@@ -1,0 +1,15 @@
+@import "../../../stylesheet/preset/mixin";
+@import "./option";
+
+$prefix: s-picture;
+
+.#{$prefix} {
+  position: relative;
+  display: inline-block;
+}
+
+.#{$prefix}-lazy {
+  position: relative;
+  // @include flex-align-items-center(inline-flex);
+  // @include justify-content(center);
+}

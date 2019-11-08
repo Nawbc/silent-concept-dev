@@ -1,0 +1,33 @@
+@import "../../../stylesheet/index.scss";
+
+$sm: 60px;
+$nor: 80px;
+$lg: 100px;
+$lgest: 120px;
+
+$prefix: square;
+$commonPrefix: s-occupy-component;
+
+.#{$commonPrefix}#{$prefix}-small {
+  position: relative;
+  @include exactSquareBox($sm);
+}
+
+.#{$commonPrefix}.#{$prefix}-normal {
+  position: relative;
+  @include exactSquareBox($nor);
+}
+
+.#{$commonPrefix}.#{$prefix}-large {
+  position: relative;
+  @include exactSquareBox($lg);
+}
+
+.#{$commonPrefix}.#{$prefix}-largest {
+  position: relative;
+  @include exactSquareBox($lgest);
+}
+
+.#{$commonPrefix}.#{$prefix}-fillet {
+  @include border-radius($global-border-radius);
+}

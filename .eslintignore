@@ -1,0 +1,10 @@
+lib/assets/svg
+app/assets
+app/public
+.vscode
+.travis.yml
+lib/**/__tests__/*.(test|spec).js
+/**/*.(test|spec).js
+release
+temp
+plugins

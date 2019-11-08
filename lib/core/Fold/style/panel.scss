@@ -1,0 +1,112 @@
+@import "./option";
+@import "../../../stylesheet/preset/index";
+@import "compass/css3";
+
+$prefix: s-panel;
+
+@mixin headline-content {
+  .headline-content {
+    width: 100%;
+    position: relative;
+    padding: $panel-content-padding;
+    @include word-break(break-all);
+
+    * {
+      display: inline-flex;
+    }
+  }
+}
+
+.#{$prefix} {
+  cursor: default;
+
+  .headline {
+    background-color: $panel-headline-bgColor;
+    @include flex-align-items-center(flex);
+    position: relative;
+    overflow: hidden;
+    font-size: $panel-font-size;
+
+    .icon {
+      @include transition($panel-icon-rotate-transition);
+      @include transform-origin($panel-icon-transform-origin);
+      margin-left: $panel-icon-margin-left;
+      will-change: transform;
+      display: inherit;
+    }
+
+    .icon-fold {
+      @include transform(rotate(0deg));
+    }
+
+    .icon-unFold {
+      @include transform(rotate(90deg));
+    }
+
+    .cancel {
+      @include border-radius($panel-cancel-radius);
+      margin-right: $panel-cancel-margin-right;
+      padding: $panel-cancel-padding;
+
+      &:hover {
+        background-color: $panel-cancel-hoverColor;
+      }
+    }
+  }
+
+  .headline-normal {
+    @include normalStyle;
+    @include headline-content;
+  }
+
+  .headline-simple {
+    margin-top: $panel-headline-simple-marginTop;
+    @include headline-content;
+  }
+
+  .first-fillet {
+    @include border-radius($panel-fillet-radius $panel-fillet-radius 0 0);
+  }
+
+  .headline-normal-fillet {
+    @include border-radius(0px 0px $panel-fillet-radius $panel-fillet-radius);
+  }
+
+  .headline-simple-fillet {
+    @include border-radius($panel-fillet-radius);
+    margin-bottom: $panel-headline-simple-marginBottom;
+  }
+
+  .headline-readonly {
+    cursor: not-allowed;
+  }
+
+  .inner {
+    padding: $panel-inner-padding;
+    font-size: $panel-font-size;
+  }
+
+  .inner-normal {
+    @include normalStyle;
+  }
+
+  .inner-simple {
+    background-color: $panel-headline-bgColor;
+  }
+
+  .inner-simple-fillet {
+    @include border-radius($panel-fillet-radius);
+  }
+
+  .inner-fillet {
+    @include border-radius($panel-fillet-radius);
+  }
+}
+
+.#{$prefix}-last {
+  border-bottom: $panel-border-color;
+}
+
+.#{$prefix}-last-fillet {
+  @include border-radius($panel-fillet-radius);
+}

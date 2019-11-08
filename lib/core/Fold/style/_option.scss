@@ -1,0 +1,42 @@
+@import "../../../stylesheet/index";
+
+$panel-headline-bgColor: $grey-a;
+
+$panel-fillet-radius: $global-border-radius;
+
+$panel-icon-transform-origin: 40%,
+50%;
+
+$panel-icon-rotate-transition: transform 400ms linear;
+
+$panel-cancel-radius: 2px;
+
+$panel-cancel-hoverColor: $grey-b;
+
+$panel-headline-simple-marginTop: 10px;
+
+$panel-headline-simple-marginBottom: 5px;
+
+$panel-inner-padding: 10px 15px;
+
+$panel-last-borderBottom: 1px solid #cfcfcf;
+
+$panel-border-color: 1px solid #cfcfcf;
+
+$panel-font-size: 14px;
+
+$panel-cancel-margin-right: 16px;
+
+$panel-cancel-padding: 2px;
+
+$panel-content-padding: 14px 15px;
+
+$panel-icon-margin-left: 16px;
+
+@mixin normalStyle {
+  border: {
+   left: $panel-border-color;
+   right: $panel-border-color;
+   top: $panel-border-color;
+ }
+}

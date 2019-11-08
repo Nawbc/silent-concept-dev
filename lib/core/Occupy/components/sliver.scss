@@ -1,0 +1,17 @@
+@import "../../../stylesheet/index";
+@import "compass/css3";
+
+$height: 20px;
+$prefix: sliver;
+
+$commonPrefix: s-occupy-component;
+
+
+.#{$commonPrefix}.#{$prefix} {
+  @include box(100%, $height);
+  position: relative;
+}
+
+.#{$commonPrefix}.#{$prefix}-fillet {
+  @include border-radius($global-border-radius);
+}

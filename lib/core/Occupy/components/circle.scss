@@ -1,0 +1,36 @@
+@import "../../../stylesheet/index.scss";
+@import "compass/css3";
+
+$sm: 60px;
+$nor: 80px;
+$lg: 100px;
+$lgest: 120px;
+
+$prefix: circle;
+
+$commonPrefix: s-occupy-component;
+
+.#{$commonPrefix}.#{$prefix} {
+  @include border-radius(100%);
+}
+
+.#{$commonPrefix}.#{$prefix}-small {
+  position: relative;
+  @include exactSquareBox($sm);
+  @include border-radius($sm);
+}
+
+.#{$commonPrefix}.#{$prefix}-normal {
+  @include exactSquareBox($nor);
+  @include border-radius($nor);
+}
+
+.#{$commonPrefix}.#{$prefix}-large {
+  @include exactSquareBox($lg);
+  @include border-radius($lg);
+}
+
+.#{$commonPrefix}.#{$prefix}-largest {
+  @include exactSquareBox($lgest);
+  @include border-radius($lgest);
+}

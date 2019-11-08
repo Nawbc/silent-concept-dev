@@ -1,0 +1,29 @@
+@import "../../../stylesheet/index.scss";
+
+$prefix: rectangle;
+$radius: 10px;
+
+$prefix: rectangle;
+$commonPrefix: s-occupy-component;
+
+
+
+.#{$commonPrefix}.#{$prefix}-fillet {
+  @include border-radius($global-border-radius);
+}
+
+.#{$commonPrefix}.#{$prefix}-small {
+  @include box(50px, 30px);
+}
+
+.#{$commonPrefix}.#{$prefix}-normal {
+  @include box(80px, 50px);
+}
+
+.#{$commonPrefix}.#{$prefix}-large {
+  @include box(170px, 100px);
+}
+
+.#{$commonPrefix}.#{$prefix}-largest {
+  @include box(220px, 130px);
+}
