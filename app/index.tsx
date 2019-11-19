@@ -1,70 +1,61 @@
 import ReactDOM from 'react-dom';
-// import { ScrollBox, Occupy, ScrollBar } from '../lib';
-import { comptStyle } from 'component-style';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import { ScrollBox, ScrollBar, useWindowResize } from '../lib';
+
 import './index.scss';
 
-function Demo(props: any) {
-	comptStyle('#demo', props.comptStyle);
+class Demo extends React.Component<any> {
+	i: any;
+	constructor(props) {
+		super(props);
+		this.i = React.createRef();
+	}
 
-	return (
-		<div id="demo">
-			<div className="a">
-				<div className="aa">
-					component
-					<div className="ab" />
-				</div>
-				<div className="b" />
-				<div className="c" />
-				<div className="d">
-					<div className="da" />
-				</div>
-			</div>
-		</div>
-	);
+	public render() {
+		return <div ref={this.i}>sadasdsa</div>;
+	}
 }
 
-function App() {
+function App(props) {
+	const ref = useRef(null);
+	useEffect(() => {
+		// return () => {
+		// 	cleanup
+		// };
+	}, []);
+
+	const { width, height } = useWindowResize();
+	console.log(width, height);
 	return (
-		<div>
-			<Demo
-				comptStyle={{
-					'.a': {
-						width: '500px',
-						height: '500px',
-						background: 'red',
-						'.aa': {
-							'font-size': '20px'
-						},
-						'.ab': {
-							width: '50px',
-							height: '50px',
-							background: 'yellow'
+		<ScrollBox
+			size={[width, height]}
+			withScrollBar={
+				<ScrollBar
+					comptStyle={{
+						'.slider': {
+							'border-radius': '10px'
 						}
-					},
-					'.b': {
-						width: '200px',
-						height: '200px',
-						background: 'blue'
-					},
-					'.c': {
-						width: '40px',
-						height: '40px',
-						background: 'green'
-					},
-					'.d': {
-						width: '10px',
-						height: '10px',
-						background: 'pink',
-						'.da': {
-							width: '10px',
-							height: '10px',
-							border: '1px solid #000'
-						}
-					}
-				}}
-			/>
-		</div>
+					}}
+				/>
+			}
+		>
+			<div style={{ height: '4000px', width: '5000px', position: 'relative' }}>
+				{Array(1000)
+					.fill('dadsadas')
+					.join('')}
+				<div
+					style={{
+						position: 'absolute',
+						bottom: '0px'
+					}}
+				>
+					<Demo ref={ref}>
+						<div>adsada</div>
+					</Demo>
+					dadas
+				</div>
+			</div>
+		</ScrollBox>
 	);
 }
 

@@ -4,8 +4,7 @@
 const webpack = require('webpack');
 const setConfig = require('../scripts/webpack/webpack.lib');
 const buildTarget = require('./buildTargets.json');
-const isDevelopment = process.env.NODE_ENV === 'development';
-const fs = require('fs-extra');
+const isZip = process.env.IS_ZIP === 'true';
 const path = require('path');
 const {
 	reportResultIfSuccess,
@@ -20,13 +19,10 @@ const handleDevName = n => {
 };
 
 const startBuild = async function() {
-	fs.emptyDirSync(path.resolve('./release/dist'));
-	fs.emptyDirSync(path.resolve('./release/components'));
-
 	for await (const [name, config] of Object.entries(buildTarget)) {
 		const cssName = config['cssName'];
-		const handledJsName = isDevelopment ? handleDevName(name) : name;
-		const handledCssName = isDevelopment ? handleDevName(cssName) : cssName;
+		const handledJsName = isZip ? handleDevName(name) : name;
+		const handledCssName = isZip ? handleDevName(cssName) : cssName;
 		config['cssName'] = handledCssName;
 		const webpackConfig = setConfig(handledJsName, config);
 

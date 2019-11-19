@@ -2,7 +2,6 @@ import React, {
 	HTMLAttributes,
 	FC,
 	useRef,
-	CSSProperties,
 	ReactNode,
 	useImperativeHandle,
 	useLayoutEffect
@@ -10,6 +9,7 @@ import React, {
 import { SilentCommonAttr, ClassValue } from '../../../interfaces';
 import { accordType, splitJsxProps, handleSize } from '../../../helper';
 import classNames from 'classnames';
+import { comptStyle as componentStyle } from 'component-style';
 import computedStyle from 'computed-style';
 import './style/index.scss';
 
@@ -27,9 +27,8 @@ interface ScrollBarTempProps extends SilentCommonAttr, HTMLAttributes<any> {
 	target?: ReactNode;
 	sliderWidth?: number;
 	mode?: 'hoverDisplay' | 'autoShrink' | 'normal';
-	blockStyle?: CSSProperties;
-	sliderStyle?: CSSProperties;
-	_contentHeight?: number;
+	readonly _contentHeight?: number;
+	comptStyle?: Record<string, string | object>;
 }
 
 interface ScrollBarProps extends ScrollBarTempProps {
@@ -55,8 +54,8 @@ const presetProps = function(props: ScrollBarProps) {
 		'className',
 		'style',
 		'mode',
-		'sliderStyle',
-		'_contentHeight'
+		'_contentHeight',
+		'comptStyle'
 	]);
 	sProps.customProps.size = handleSize(sProps.customProps.size!);
 	return sProps;
@@ -74,7 +73,7 @@ const presetProps = function(props: ScrollBarProps) {
 const ScrollBar: FC<ScrollBarProps> = function(props, refs) {
 	const { nativeProps, customProps } = presetProps(props);
 	const { containerCN, sliderCN } = presetClassName(customProps);
-	const { size, style, _contentHeight, sliderStyle } = customProps;
+	const { size, style, _contentHeight, comptStyle } = customProps;
 
 	const barRef = useRef(null);
 	const sliderRef = useRef(null);
@@ -102,7 +101,8 @@ const ScrollBar: FC<ScrollBarProps> = function(props, refs) {
 		if (_contentHeight !== 0) {
 			sliderEle.style.height = (barHeight * barHeight) / _contentHeight! + 'px';
 		}
-	}, [_contentHeight]);
+		!!comptStyle && componentStyle(`#${prefix}`, comptStyle);
+	}, [_contentHeight, comptStyle]);
 
 	const containerStyle = {
 		...accordType(size, 'Object', {}),
@@ -110,8 +110,8 @@ const ScrollBar: FC<ScrollBarProps> = function(props, refs) {
 	};
 
 	return (
-		<div ref={barRef} {...nativeProps} style={containerStyle} className={containerCN}>
-			<div ref={sliderRef} className={sliderCN} style={sliderStyle} />
+		<div id={prefix} ref={barRef} {...nativeProps} style={containerStyle} className={containerCN}>
+			<div ref={sliderRef} className={sliderCN} />
 		</div>
 	);
 };

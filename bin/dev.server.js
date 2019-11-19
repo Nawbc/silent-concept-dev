@@ -28,11 +28,11 @@ const targetAddress = url.format({
 const devAppBuildTarget = {
 	entry: './app/index.tsx',
 	output: './app/public',
-	cssName: 'app.css',
+	cssName: 'app',
 	libraryTarget: 'umd'
 };
 
-const devAppTargetName = './static/js/silent_doc_site.js';
+const devAppTargetName = './static/js/doc_site.js';
 
 const serverConfig = {
 	compress: true,

@@ -6,12 +6,13 @@
  *=================================================================================================*/
 
 import React, { ReactElement, useRef, useLayoutEffect, HTMLAttributes, FC } from 'react';
-import classNames from 'classnames';
 import { SilentCommonAttr, EffectType, SizeType, ClassValue, DefaultColor } from '../../interfaces';
-import * as DefaultSvg from '../../assets/svg';
 import { accordType, splitJsxProps, handleSize } from '../../helper';
-import './style/icon.scss';
+import { comptStyle as componentStyle } from 'component-style';
+import * as DefaultSvg from '../../assets/svg';
 import Picture from '../../core/Picture';
+import classNames from 'classnames';
+import './style/icon.scss';
 
 const prefix = 's-icon';
 
@@ -25,6 +26,7 @@ interface IconTempProps extends SilentCommonAttr, HTMLAttributes<any> {
 	size?: SizeType;
 	className?: any;
 	iconNotRotate?: boolean;
+	comptStyle?: Record<string, string | object>;
 }
 
 export interface IconProps extends IconTempProps {
@@ -44,9 +46,9 @@ const presetProps = function(props: IconProps) {
 		'src',
 		'type',
 		'size',
-		'style',
 		'beforeLoad',
 		'className',
+		'comptStyle',
 		'pigment',
 		'style',
 		'lazy',
@@ -69,7 +71,7 @@ export interface IconFunction {
 const Icon: FC<IconProps> = function(props) {
 	const { nativeProps, customProps } = presetProps(props);
 	const className = presetClassName(customProps);
-	const { src, lazy, type, pigment, size, style } = customProps;
+	const { src, lazy, type, pigment, size, style, comptStyle } = customProps;
 	const DefaultIcon = DefaultSvg[type!];
 	const refEle = useRef(null);
 	const customStyle = {
@@ -80,10 +82,12 @@ const Icon: FC<IconProps> = function(props) {
 	useLayoutEffect(() => {
 		const container = (refEle.current as unknown) as HTMLElement;
 		const firstEle = container.firstChild as SVGAnimateElement;
+		comptStyle && componentStyle(`#${prefix}`, comptStyle);
 		if (firstEle && firstEle.tagName === 'svg') {
 			firstEle.style.fill = `${pigment}`;
 		}
-	});
+	}, [comptStyle, pigment]);
+
 	return (
 		<i {...nativeProps} className={className} style={customStyle} ref={refEle}>
 			{!!type ? (

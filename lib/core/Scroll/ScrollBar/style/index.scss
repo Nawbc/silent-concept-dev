@@ -27,7 +27,6 @@ $prefix: s-scrollBar;
 .#{$prefix}-normal {
   @include box(14px, 100%);
 
-
   .slider {
     height: 100px;
     @include nativeSlider;

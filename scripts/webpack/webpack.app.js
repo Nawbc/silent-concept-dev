@@ -9,14 +9,14 @@ const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDevelopment = env === 'development';
 
-module.exports = function(devTargetName, devBuildTarget) {
+module.exports = function(targetName, buildTarget) {
 	const libConfig = setLibConfig(
-		devTargetName,
-		devBuildTarget,
-		// 注入rule
+		targetName,
+		buildTarget,
+		// 注入设置
 		Object.assign(
 			{
-				cssName: `static/css/${devBuildTarget.cssName}.css`,
+				cssName: `static/css/${buildTarget.cssName}`,
 				useAppPath: true
 			},
 			isProduction && { cssChunkName: 'static/css/[name].[contenthash:8].chunk.css' }

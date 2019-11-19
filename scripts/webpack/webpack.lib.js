@@ -8,35 +8,29 @@ const Terser = require('terser-webpack-plugin');
 const bannerText = require('../utils/banner');
 const { BannerPlugin } = require('webpack');
 const compassImporter = require('../utils/compass');
-const { pluginsPath, tsConfigPath, getAbsolutePath, libPath, appPath } = require('../utils/helper');
+const { tsConfigPath, getAbsolutePath, libPath, appPath } = require('../utils/helper');
 const os = require('os');
-
-/**=================================================================================================
- * 设置为 webpack 在babelrc里改为 scss 改名为css
- *=================================================================================================*/
-
-process.env.SILENT_ACTION = 'UN_SCSS_RENAME';
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDevelopment = env === 'development';
 
-const isZip = !!process.env.SILENT_ZIP;
+const isZip = process.env.IS_ZIP === 'true';
 const workers = os.cpus().length;
 
-const setLibConfig = function(entryName, packageConfig, ruleInject = {}) {
+const setLibConfig = function(outputName, packageConfig, ruleInject = {}) {
 	const { entry, output, library, libraryTarget, cssName } = packageConfig;
 	const absEntryPath = getAbsolutePath(entry);
 	const absOutputPath = getAbsolutePath(output);
-
 	return {
 		mode: env,
-		devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
+		/**{@link https://www.webpackjs.com/configuration/devtool/#devtool}*/
+		devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
 		entry: [absEntryPath],
 		output: Object.assign(
 			{
 				path: absOutputPath,
-				filename: entryName,
+				filename: outputName,
 				libraryTarget: libraryTarget
 			},
 			!!library && { library }
@@ -99,7 +93,7 @@ const setLibConfig = function(entryName, packageConfig, ruleInject = {}) {
 					oneOf: [
 						{
 							test: /\.(js|jsx|ts|tsx)$/,
-							include: [pluginsPath, libPath, !!ruleInject.useAppPath && appPath].filter(Boolean),
+							include: [libPath, !!ruleInject.useAppPath && appPath].filter(Boolean),
 							use: [
 								{
 									loader: 'babel-loader',
@@ -182,7 +176,7 @@ const setLibConfig = function(entryName, packageConfig, ruleInject = {}) {
 				checkSyntacticErrors: true,
 				tsconfig: tsConfigPath,
 				reportFiles: ['**', '!**/*.json', '!**/__tests__/**', '!**/?(*.)(spec|test).*'],
-				watch: [libPath, pluginsPath, !!ruleInject.useAppPath && appPath].filter(Boolean),
+				watch: [libPath, !!ruleInject.useAppPath && appPath].filter(Boolean),
 				eslint: true
 			}),
 			isProduction && new BannerPlugin(bannerText)

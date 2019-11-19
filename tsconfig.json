@@ -9,6 +9,7 @@
 		"noUnusedParameters": false,
 		"noUnusedLocals": false,
 		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
 		"experimentalDecorators": true,
 		"allowSyntheticDefaultImports": true,
 		"module": "esnext",
@@ -19,9 +20,7 @@
 		"outDir": "release/es",
 		"lib": [
 			"dom",
-			"es7",
-			"es6",
-			"es5",
+			"esnext",
 			"dom.iterable"
 		]
 	},
@@ -31,6 +30,7 @@
 		"example"
 	],
 	"include": [
-		"."
+		"app",
+		"lib"
 	]
 }

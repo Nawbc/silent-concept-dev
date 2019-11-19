@@ -1,66 +1,110 @@
-import computedStyle from 'computed-style';
+/**=================================================================================================
+ *			AUTHOR --- Han Wang
+ *			LICENSE --- Apache-2.0
+ *			LASTMODIFY --- 2019-08-23T13:12:35.627Z
+ *			DESCRIPTION --- 提供一些工具函数
+ *			REPOSITORY --- https://github.com/sewerganger/silent-concept
+ *=================================================================================================*/
 
-export const is = {
-	type(obj: unknown, str: string): boolean {
-		return Object.prototype.toString.call(obj) === `[object ${str}]`;
-	},
-	string(obj: unknown): obj is string {
-		return this.type(obj, 'String');
-	},
-	object(obj: unknown): obj is object {
-		return this.type(obj, 'Object');
-	},
-	function(obj: unknown): obj is Function {
-		return this.type(obj, 'Function');
-	},
-	null(obj: unknown): obj is null {
-		return this.type(obj, 'Null');
-	},
-	undefined(obj: unknown): obj is undefined {
-		return this.type(obj, 'Undefined');
-	},
-	number(obj: unknown): obj is number {
-		return this.type(obj, 'Number');
+import { SizeType } from '../interfaces';
+import { accordType } from './dash';
+
+/**=================================================================================================
+ *			LASTMODIFY --- 2019-08-23T07:35:50.430Z
+ *			DESCRIPTION --- 处理size 属性大小 把数组转化成 CSSProperties 默认单位为px
+ *			EXAMPLE --- 处理接收的size属性 ["1px", "1px"] or [1, 1] or [1] or 'normal' or
+ *                            {fonSize:'10px'} or {width:'10px'}
+ * =================================================================================================*/
+
+/* eslint-disable @typescript-eslint/indent*/
+export const handleSize = (size: SizeType): SizeType =>
+	Array.isArray(size)
+		? 1 === size.length
+			? { width: accordType(size[0], 'String', size![0] + 'px') }
+			: {
+					width: accordType(size[0], 'String', size[0] + 'px'),
+					height: accordType(size[1], 'String', size[1] + 'px')
+			  }
+		: size;
+/**=================================================================================================
+ *			LASTMODIFY --- 2019-08-23T07:45:13.469Z
+ *			DESCRIPTION ---  把html 和 react 原有属性 和 组件 要使用的属性分开 深度拷贝props
+ * =================================================================================================*/
+
+export interface AfterSplitJsxProps<T> {
+	nativeProps: React.Props<any>;
+	customProps: T;
+}
+
+export type PartialArray<T> = (keyof T)[];
+
+export const splitJsxProps = function<Type>(
+	receiveProps: React.Props<any>,
+	useProps: PartialArray<Type>
+): AfterSplitJsxProps<Type> {
+	const nativeProps: React.Props<any> = {};
+	const customProps: Type = {} as Type;
+
+	for (const prop in receiveProps) {
+		useProps.indexOf(prop as keyof Type) >= 0
+			? (customProps[prop] = receiveProps[prop])
+			: (nativeProps[prop] = receiveProps[prop]);
 	}
+
+	return { nativeProps, customProps };
 };
 
 /**=================================================================================================
- *			LASTMODIFY --- 2019-08-26T05:48:13.163Z
- *			DESCRIPTION --- 如果是符合b类型 就返回a , 否则返回c
+ *			LASTMODIFY --- 2019-11-12T11:08:26.084Z
+ *			DESCRIPTION --- 十六进制转 rgb
  *=================================================================================================*/
-export const accordType = (a: any, b: string, c: any) => (is.type(a, b) ? a : c);
+
+export const hexToRgb = function(str: string) {
+	const literal = str.replace('#', '');
+	return literal.length === 3
+		? literal.match(/./g)!.map(val => parseInt(val, 16) ** 2)
+		: literal.match(/../g)!.map(val => parseInt(val, 16));
+};
 
 /**=================================================================================================
- *			LASTMODIFY --- 2019-09-12T01:15:00.363Z
- *			DESCRIPTION --- 随机数
+ *			LASTMODIFY --- 2019-11-12T11:09:28.556Z
+ *			DESCRIPTION --- rgb 转 十六进制
  *=================================================================================================*/
-
-export const randomNumber = (min: number, max: number): number =>
-	min + Math.floor(Math.random() * (max - min)) + 1;
+export const rgbToHex = function(a: number, b: number, c: number) {
+	const hex = [a.toString(16), b.toString(16), c.toString(16)];
+	for (let i = 0; i < 3; i++) if (hex[i].length == 1) hex[i] = '0' + hex[i];
+	return '#' + hex.join('');
+};
 
 /**=================================================================================================
- *			LASTMODIFY --- 2019-09-07T07:01:05.769Z
- *			DESCRIPTION --- 随机生成字母
+ *			LASTMODIFY --- 2019-11-12T11:10:25.493Z
+ *			DESCRIPTION ---  颜色变深
  *=================================================================================================*/
-export const randomAlphabet = (from: number, to: number): string =>
-	String.fromCharCode(randomNumber(from, to));
 
+export const makeColorDarker = function(color: string, level: number) {
+	return (
+		'rgb(' +
+		color
+			.slice(4, color.length - 1)
+			.split(',')
+			.map(v => Math.ceil(parseInt(v) * level))
+			.join(',') +
+		')'
+	);
+};
 /**=================================================================================================
- *			LASTMODIFY --- 2019-09-07T07:02:16.386Z
- *			DESCRIPTION --- 随机产生选取数组中的渐变色
- *=================================================================================================*/
-export const randomGradients = (arr: string[]): string => arr[randomNumber(0, arr.length - 1)];
-
-export const generateToken = () =>
-	(Math.round(Math.random() * 0x1000000000) + new Date().getTime()).toString(36);
-
-/**=================================================================================================
- *			LASTMODIFY --- 2019-11-01T06:44:30.264Z
- *			DESCRIPTION ---  转换工具
+ *			LASTMODIFY --- 2019-11-12T11:10:52.832Z
+ *			DESCRIPTION --- 颜色变浅
  *=================================================================================================*/
 
-export const cv = {
-	style2int(ele: HTMLElement, prop: string): number {
-		return parseInt(computedStyle(ele, prop));
-	}
+export const makeColorLighter = function(color: string, level: number) {
+	return (
+		'rgb(' +
+		color
+			.slice(4, color.length - 1)
+			.split(',')
+			.map(v => Math.ceil((255 - parseInt(v)) * level + parseInt(v)))
+			.join(',') +
+		')'
+	);
 };

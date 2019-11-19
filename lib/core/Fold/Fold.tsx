@@ -7,7 +7,7 @@
 import React, { HTMLAttributes, FC, useContext, useEffect } from 'react';
 import classNames from 'classnames';
 import { SilentCommonAttr, ClassValue } from '../../interfaces';
-import { accordType, splitJsxProps, handleSize, completeStyle } from '../../helper';
+import { accordType, splitJsxProps, handleSize } from '../../helper';
 
 export type modeType = 'simple' | 'normal';
 
@@ -72,7 +72,7 @@ const Fold: FC<FoldProps> = function(props) {
 		/**=================================================================================================
 		 * 改变组件内部 style
 		 *=================================================================================================*/
-		!!addStyle && completeStyle(prefix, addStyle);
+		// !!addStyle && completeStyle(prefix, addStyle);
 	}, [addStyle]);
 
 	return (

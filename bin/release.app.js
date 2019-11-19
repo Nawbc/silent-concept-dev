@@ -2,47 +2,46 @@
 
 const webpack = require('webpack');
 const appConfig = require('../scripts/webpack/webpack.app');
-// const formatMessages = require('webpack-format-messages');
-const chalk = require('chalk');
+const { moveSync } = require('fs-extra');
+const { faviconOrigin, faviconTarget } = require('../scripts/utils/helper');
 
-const devAppBuildTarget = {
+const {
+	reportResultIfSuccess,
+	reportErrors,
+	reportWarnings,
+	reportInvalidResult
+} = require('../scripts/utils/reportResults');
+
+const appBuildTarget = {
 	entry: './app/index.tsx',
 	output: './release/app/',
 	cssName: 'app.css',
 	libraryTarget: 'umd'
 };
 
-const devAppTargetName = './static/js/silent_doc_site.js';
+const appTargetName = './static/js/doc_site.js';
 
 const startBuild = function() {
-	const webpackConfig = appConfig(devAppTargetName, devAppBuildTarget);
+	const webpackConfig = appConfig(appTargetName, appBuildTarget);
 	const compiler = webpack(webpackConfig);
 
 	compiler.run(err => {
 		if (err) throw err;
 	});
 
-	compiler.hooks.invalid.tap('invalid', function() {
-		console.log(chalk.blue('Compiling...'));
-	});
+	compiler.hooks.invalid.tap('invalid', reportInvalidResult);
 
 	compiler.hooks.done.tap('done', stats => {
-		const jsonStats = stats.toJson();
+		const statsJson = stats.toJson();
+		moveSync(faviconOrigin, faviconTarget);
+		console.log();
+		console.log('[ ======================================================== ]');
 
-		if (!messages.errors.length && !messages.warnings.length) {
-			console.log(chalk.green('Compiled successfully!'));
+		reportResultIfSuccess(statsJson);
+		if (reportErrors(statsJson)) {
+			process.exit();
 		}
-
-		if (messages.errors.length) {
-			console.log(chalk.red('Failed to compile.'));
-			messages.errors.forEach(e => console.log(e));
-			return;
-		}
-
-		if (messages.warnings.length) {
-			console.log(chalk.yellow('Compiled with warnings.'));
-			messages.warnings.forEach(w => console.log(w));
-		}
+		reportWarnings(statsJson);
 	});
 };
 startBuild();

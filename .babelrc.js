@@ -1,4 +1,7 @@
-const isScssRename = process.env.SILENT_ACTION === 'SCSS_RENAME';
+/**=================================================================================================
+ * 		设置为 webpack 在babelrc里改为 scss 改名为css
+ *=================================================================================================*/
+const isScssRename = process.env.IS_RENAME === 'true';
 
 const transformRenameImport = [
 	'transform-rename-import',

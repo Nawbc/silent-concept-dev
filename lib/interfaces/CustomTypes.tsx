@@ -13,7 +13,8 @@ export type SizeType =
 	| [number | string, number | string]
 	| React.CSSProperties
 	| [string]
-	| [number];
+	| [number]
+	| undefined;
 
 export type PositionType =
 	| 'topLeft'
@@ -25,7 +26,8 @@ export type PositionType =
 	| 'bottomRight'
 	| 'bottomLeft'
 	| [string | number, string | number]
-	| [string | number];
+	| [string | number]
+	| undefined;
 
 export type EffectType =
 	| 'click-down'

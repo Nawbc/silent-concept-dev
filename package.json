@@ -6,32 +6,28 @@
 	"main": "./release/lib/index.js",
 	"module": "./release/es/index.js",
 	"scripts": {
-		"start": "cross-env NODE_ENV=development SILENT_ZIP=false node bin/dev.server.js",
-		"release:dist": "npm-run-all dist:*",
-		"dist:zip": "cross-env NODE_ENV=production SILENT_ZIP=true node ./bin/release.dist.js",
-		"dist:unzip": "cross-env NODE_ENV=production SILENT_ZIP=false node ./bin/release.dist.js",
-		"release:app": "cross-env NODE_ENV=production  SILENT_ZIP=true node ./bin/release.app.js",
-		"es": "node ./.bin/release.lib.js  es",
+		"start": "cross-env NODE_ENV=development IS_ZIP=false node bin/dev.server.js",
+		"release:dist": "rimraf release/dist && rimraf release/components && npm-run-all dist:*",
+		"dist:zip": "cross-env NODE_ENV=production IS_ZIP=true node ./bin/release.dist.js",
+		"dist:unzip": "cross-env NODE_ENV=production IS_ZIP=false node ./bin/release.dist.js",
+		"release:app": "rimraf release/app && cross-env NODE_ENV=production IS_ZIP=true node ./bin/release.app.js",
+		"es": "node ./bin/release.lib.js es",
 		"es:tsc": "tsc --outDir ./release/es -p ./includeLib.json",
-		"lib": "node ./.bin/release.es.lib.js  lib",
-		"lib:babel": "cross-env NODE_ENV=production SILENT_ACTION=SCSS_RENAME babel lib --out-dir release/lib --extensions .tsx --source-maps",
-		"plugins": "node ./.bin/release.plugins.js",
-		"plugins:tsc": "tsc --outDir ./release/plugins -p ./includePlugins.json",
-		"lib:dts": "tsc -d --emitDeclarationOnly -p ./includeLib.json --declarationDir ./release/lib",
 		"es:dts": "tsc -d --emitDeclarationOnly -p ./includeLib.json --declarationDir ./release/es",
-		"plugins:dts": "tsc -d --emitDeclarationOnly -p ./includePlugins.json --declarationDir ./release/plugins",
-		"scss:lib": "node-sass lib -o release/lib --importer ./.scripts/utils/compass.js --source-map true --output-style compressed",
-		"scss:es": "node-sass lib -o release/es --importer ./.scripts/utils/compass.js --source-map true --output-style compressed",
-		"scss:plugins": "node-sass lib -o release/plugins --importer ./.scripts/utils/compass.js --source-map true --output-style compressed",
+		"lib": "node ./bin/release.lib.js  lib",
+		"lib:babel": "cross-env NODE_ENV=production IS_RENAME=true babel lib --out-dir release/lib --extensions .tsx --source-maps",
+		"lib:dts": "tsc -d --emitDeclarationOnly -p ./includeLib.json --declarationDir ./release/lib",
 		"release": "npm run dist && npm run app && npm run lib && npm run es && npm run plugins",
+		"scss:lib": "node-sass lib -o release/lib --importer ./scripts/utils/compass.js --source-map true --output-style compressed",
+		"scss:es": "node-sass lib -o release/es --importer ./scripts/utils/compass.js --source-map true --output-style compressed",
 		"test": "npm run test:unit && npm run test:e2e",
 		"test:unit": "jest -u",
 		"test:e2e": "jest --config ./jest.e2e.js",
-		"test:ci": "cross-env CI=true node ./.scripts/utils/ciTest.js",
+		"test:ci": "cross-env CI=true node ./scripts/utils/ciTest.js",
 		"auto": "npm-run-all auto:*",
 		"auto:lang": "node ./auto/langTypesMaker.js",
 		"auto:color": "node ./auto/gradientsMaker.js",
-		"auto:svg": "node ./auto/svgModuleMaker.js",
+		"auto:svg": "node ./auto/`svgModuleMaker`.js",
 		"eslint": "eslint ./ --ext .ts,.tsx,.js,.jsx --fix",
 		"eslint:test": "eslint ./lib/index.tsx --fix",
 		"cz:init": "commitizen init cz-conventional-changelog --save --save-exact",
@@ -40,6 +36,17 @@
 	"engines": {
 		"npm": "6.10.1",
 		"node": ">=10.13.0"
+	},
+	"config": {
+		"port": 3000,
+		"commitizen": {
+			"path": "./node_modules/cz-conventional-changelog"
+		},
+		"webgradients": "https://webgradients.com/",
+		"libSvg": {
+			"target": "./lib/assets/svg",
+			"src": "./auto/svg"
+		}
 	},
 	"dependencies": {
 		"classnames": "^2.2.6",
@@ -115,6 +122,7 @@
 		"react-router-dom": "^5.0.1",
 		"react-syntax-highlighter": "^11.0.2",
 		"react-test-renderer": "^16.8.6",
+		"rimraf": "^3.0.0",
 		"sass-loader": "7.1.0",
 		"style-loader": "0.23.1",
 		"svg-to-react": "^0.1.0",
@@ -130,16 +138,5 @@
 		"workbox-webpack-plugin": "4.2.0"
 	},
 	"license": "Apache-2.0",
-	"repository": "https://github.com/sewerganger/silent-concept",
-	"config": {
-		"port": 3000,
-		"commitizen": {
-			"path": "./node_modules/cz-conventional-changelog"
-		},
-		"webgradients": "https://webgradients.com/",
-		"libSvg": {
-			"target": "./lib/assets/svg",
-			"src": "./auto/svg"
-		}
-	}
+	"repository": "https://github.com/sewerganger/silent-concept"
 }

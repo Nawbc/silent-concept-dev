@@ -1,10 +1,13 @@
 const path = require('path');
-const getAbsolutePath = _path => path.resolve(_path);
+const getAbsolutePath = p => path.resolve(p);
 
-exports.getAbsolutePath = getAbsolutePath;
-exports.pluginsPath = getAbsolutePath('./plugins');
-exports.libPath = getAbsolutePath('./lib');
-exports.appPath = getAbsolutePath('./app');
-exports.tsConfigPath = getAbsolutePath('./tsconfig.json');
-exports.appPublicPath = getAbsolutePath('./app/public');
-exports.htmlTemplate = getAbsolutePath('./app/public/index.html');
+module.exports = {
+	getAbsolutePath: getAbsolutePath,
+	libPath: getAbsolutePath('./lib'),
+	appPath: getAbsolutePath('./app'),
+	tsConfigPath: getAbsolutePath('./tsconfig.json'),
+	appPublicPath: getAbsolutePath('./app/public'),
+	htmlTemplate: getAbsolutePath('./app/public/index.html'),
+	faviconOrigin: getAbsolutePath('./app/public/favicon.ico'),
+	faviconTarget: getAbsolutePath('./release/app/favicon.ico')
+};

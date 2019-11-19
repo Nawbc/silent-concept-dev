@@ -3,17 +3,18 @@ import { SilentCommonAttr, ClassValue } from '../../../../lib/interfaces';
 import { accordType, splitJsxProps, handleSize, cv, is } from '../../../../lib/helper';
 import classNames from 'classnames';
 import ScrollBar, { scrollBarWidth } from '../ScrollBar';
-import { useResize } from '../../Tools/hooks/useResize';
 // import computedStyle from 'computed-style';
 import './style/index.scss';
+import { useWindowResize, useMutation } from '../../Tools/hooks';
 
 const prefix = 's-scrollBox';
 
 interface ScrollBoxTempProps extends SilentCommonAttr, HTMLAttributes<any> {
 	className?: any;
 	hoverDisplayScrollSlider?: boolean;
-	x?: boolean;
-	y?: boolean;
+	compStyle?: any;
+	forceX?: boolean;
+	forceY?: boolean;
 	withScrollBar?: boolean | ReactNode;
 }
 
@@ -22,14 +23,11 @@ interface ScrollBoxProps extends ScrollBoxTempProps {
 }
 
 const presetClassName = function(cProps: ScrollBoxProps) {
-	const { x, y, className } = cProps;
+	const { className } = cProps;
 
 	return {
 		containerCN: classNames(prefix, className),
-		scrollCN: classNames('scroll', {
-			'scroll-x': x,
-			'scroll-y': y
-		})
+		scrollCN: classNames('scroll', {})
 	};
 };
 
@@ -41,12 +39,10 @@ const presetProps = function(props: ScrollBoxProps) {
 		'children',
 		'hoverDisplayScrollSlider',
 		'withScrollBar',
-		'onScroll'
-		// 'scrollX',
-		// 'scrollY',
-		// 'disable'
+		'onScroll',
+		'compStyle'
 	]);
-	sProps.customProps.size = handleSize(sProps.customProps.size!);
+	sProps.customProps.size = handleSize(sProps.customProps.size);
 	return sProps;
 };
 
@@ -63,10 +59,10 @@ const ScrollBox: FC<ScrollBoxProps> = function(props) {
 	const { size, style, children, withScrollBar, onScroll } = customProps;
 	const [contentHeight, setContentHeight] = useState(0);
 	// const [isDisplayBar, setDisplayBar] = useState(false);
-	const contentRef = useRef(null);
-	const [dySize, bounds] = useResize();
-	const scrollRef = useRef(null);
-	const barRef = useRef();
+	const contentRef = useRef<HTMLDivElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const scrollRef = useRef<HTMLDivElement>(null);
+	const barRef = useRef<HTMLDivElement>(null);
 
 	const containerStyle = {
 		...accordType(size, 'Object', {}),
@@ -82,43 +78,31 @@ const ScrollBox: FC<ScrollBoxProps> = function(props) {
 	) : null;
 
 	useLayoutEffect(() => {
-		const contentEle = (contentRef.current as unknown) as HTMLElement;
-		const containerEle = dySize.current as HTMLElement;
-		const scrollEle = (scrollRef.current as unknown) as HTMLElement;
-
+		const contentEle = contentRef.current!;
+		const containerEle = containerRef.current!;
+		const scrollEle = scrollRef.current!;
 		const contentHeight = cv.style2int(contentEle, 'height');
 		const containerHeight = cv.style2int(containerEle, 'height');
 		const containerWidth = cv.style2int(containerEle, 'width');
-
 		const isDisplayBar = contentHeight > containerHeight;
-		console.log(contentHeight, containerHeight);
-
 		scrollEle.style.width = cv.style2int(containerEle, 'width') + scrollBarWidth + 'px';
 		scrollEle.style.height = containerHeight + scrollBarWidth + 'px';
 		scrollEle.onscroll = function(e) {
 			const ev = window.event || e;
-			is.function(onScroll) && onScroll(ev as any);
 			const targetEle = ev.target as HTMLElement;
 			const { updateSliderTop } = barRef.current as any;
-			/* 	is.function(updateSliderTop) && */ updateSliderTop(targetEle.scrollTop);
+			updateSliderTop(targetEle.scrollTop);
+			is.function(onScroll) && onScroll(ev as any);
 		};
-
 		contentEle.style.width =
 			containerWidth - (!!withScrollBar && isDisplayBar ? scrollBarWidth : 0) + 'px';
-
-		// isDisplayBar ? :
-
-		//待实现  container的通过mutationObserver改变  更新contentEle的height
+		// 待实现  container的通过mutationObserver改变  更新contentEle的height
 		setContentHeight(cv.style2int(contentEle, 'height'));
-	}, [bounds, dySize, withScrollBar, onScroll]);
+	}, [withScrollBar, onScroll]);
 
 	return (
-		<div ref={dySize} {...nativeProps} style={containerStyle} className={containerCN}>
-			<div
-				/*eslint-env browser*/
-				className={scrollCN}
-				ref={scrollRef}
-			>
+		<div ref={containerRef} {...nativeProps} style={containerStyle} className={containerCN}>
+			<div className={scrollCN} ref={scrollRef}>
 				<div ref={contentRef}>{children}</div>
 			</div>
 			{scrollBar}

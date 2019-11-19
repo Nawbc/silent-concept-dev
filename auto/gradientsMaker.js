@@ -50,11 +50,11 @@ const getGradientColors = url =>
 			          ${color}
 			      }\n`;
 				gradientScss += template;
-				gradientArrContent += "'" + name + (collections.length - 1 === index ? "'" : "',");
+				gradientArrContent += '\'' + name + (collections.length - 1 === index ? '\'' : '\',');
 				gradientTypesContent +=
 					index === 0
 						? '\n'
-						: '\t| ' + "'" + (name + "'" + (index === collections.length - 1 ? ';' : '')) + '\n';
+						: '\t| ' + '\'' + (name + '\'' + (index === collections.length - 1 ? ';' : '')) + '\n';
 			});
 			const typesArr = 'export const gradientsArray = [' + gradientArrContent + '];';
 			const gradientTypes = 'export type GradientTypes =' + gradientTypesContent;
