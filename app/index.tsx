@@ -1,23 +1,14 @@
 import ReactDOM from 'react-dom';
-import React, { useRef, useEffect } from 'react';
-import { ScrollBox, ScrollBar, useWindowResize } from '../lib';
+import React, { useEffect } from 'react';
+import { ScrollBox, useWindowResize } from '../lib';
 
 import './index.scss';
 
-class Demo extends React.Component<any> {
-	i: any;
-	constructor(props) {
-		super(props);
-		this.i = React.createRef();
-	}
-
-	public render() {
-		return <div ref={this.i}>sadasdsa</div>;
-	}
+function Demo(props) {
+	return <div>Demo1</div>;
 }
 
 function App(props) {
-	const ref = useRef(null);
 	useEffect(() => {
 		// return () => {
 		// 	cleanup
@@ -25,23 +16,23 @@ function App(props) {
 	}, []);
 
 	const { width, height } = useWindowResize();
-	console.log(width, height);
 	return (
 		<ScrollBox
 			size={[width, height]}
 			withScrollBar={
-				<ScrollBar
-					comptStyle={{
-						'.slider': {
-							'border-radius': '10px'
-						}
-					}}
-				/>
+				true
+				// <ScrollBar
+				// 	comptStyle={{
+				// 		'.slider': {
+				// 			'border-radius': '10px'
+				// 		}
+				// 	}}
+				// />
 			}
 		>
-			<div style={{ height: '4000px', width: '5000px', position: 'relative' }}>
+			<div style={{ height: '6000px', width: '5000px', position: 'relative' }}>
 				{Array(1000)
-					.fill('dadsadas')
+					.fill('sadas')
 					.join('')}
 				<div
 					style={{
@@ -49,7 +40,7 @@ function App(props) {
 						bottom: '0px'
 					}}
 				>
-					<Demo ref={ref}>
+					<Demo>
 						<div>adsada</div>
 					</Demo>
 					dadas

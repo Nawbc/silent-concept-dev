@@ -17,7 +17,6 @@ import React, {
 	useLayoutEffect,
 	CSSProperties,
 	useState
-	// useReducer
 } from 'react';
 import { SilentCommonAttr, ClassValue, SizeType } from '../../interfaces';
 import { FoldContext, FoldProps } from './Fold';
@@ -34,9 +33,9 @@ import {
 import './style/panel.scss';
 import Icon from '../Icon';
 
-export type ModeType = 'simple' | 'normal';
-
 const prefix = 's-panel';
+
+export type ModeType = 'simple' | 'normal';
 
 export const PanelContext = React.createContext({});
 
@@ -93,6 +92,7 @@ interface ClassNameEx {
 	innerCN: string;
 	iconCN: string;
 }
+
 const presetClassName = function(
 	cProps: PanelProps,
 	useFold: any,

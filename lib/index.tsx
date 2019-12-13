@@ -2,7 +2,7 @@
  *			DESCRIPTION --- ROOT
  *=================================================================================================*/
 
-export { default as Silent } from './Silent';
+export { default as Silent } from './core/Silent';
 
 /**=================================================================================================
  *			DESCRIPTION --- CORE
@@ -18,3 +18,7 @@ export { default as Occupy } from './core/Occupy';
 export * from './core/Tools';
 export * from './core/Scroll';
 export * from './core/Layout';
+
+/**=================================================================================================
+ *			DESCRIPTION --- SilentMini
+ *=================================================================================================*/

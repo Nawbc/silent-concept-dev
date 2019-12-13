@@ -5,9 +5,6 @@ export const useWindowResize = function() {
 	const [size, setReSize] = useState(getSize());
 	useLayoutEffect(() => {
 		window.onresize = () => setReSize(getSize());
-		// return () => {
-
-		// }
 	}, []);
 	return size;
 };

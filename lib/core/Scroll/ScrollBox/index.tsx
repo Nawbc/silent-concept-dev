@@ -1,11 +1,11 @@
 import React, { HTMLAttributes, FC, useRef, useLayoutEffect, ReactNode, useState } from 'react';
 import { SilentCommonAttr, ClassValue } from '../../../../lib/interfaces';
 import { accordType, splitJsxProps, handleSize, cv, is } from '../../../../lib/helper';
+import { scrollSliderWidth } from '../constant';
 import classNames from 'classnames';
-import ScrollBar, { scrollBarWidth } from '../ScrollBar';
+import ScrollBar from '../ScrollBar';
 // import computedStyle from 'computed-style';
 import './style/index.scss';
-import { useWindowResize, useMutation } from '../../Tools/hooks';
 
 const prefix = 's-scrollBox';
 
@@ -58,7 +58,7 @@ const ScrollBox: FC<ScrollBoxProps> = function(props) {
 	const { containerCN, scrollCN } = presetClassName(customProps);
 	const { size, style, children, withScrollBar, onScroll } = customProps;
 	const [contentHeight, setContentHeight] = useState(0);
-	// const [isDisplayBar, setDisplayBar] = useState(false);
+	const [isHiddenBar, setHiddenBar] = useState(false);
 	const contentRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -71,9 +71,11 @@ const ScrollBox: FC<ScrollBoxProps> = function(props) {
 
 	const scrollBar = !!withScrollBar ? (
 		React.isValidElement(withScrollBar) ? (
-			React.cloneElement(withScrollBar, { ref: barRef, _contentHeight: contentHeight })
+			// 使用自定义的的ScrollBar
+			React.cloneElement(withScrollBar, { ref: barRef, contentHeight: contentHeight })
 		) : (
-			<ScrollBar ref={barRef} _contentHeight={contentHeight} />
+			// 使用默认的ScrollBar
+			<ScrollBar ref={barRef} contentHeight={contentHeight} />
 		)
 	) : null;
 
@@ -84,28 +86,38 @@ const ScrollBox: FC<ScrollBoxProps> = function(props) {
 		const contentHeight = cv.style2int(contentEle, 'height');
 		const containerHeight = cv.style2int(containerEle, 'height');
 		const containerWidth = cv.style2int(containerEle, 'width');
-		const isDisplayBar = contentHeight > containerHeight;
-		scrollEle.style.width = cv.style2int(containerEle, 'width') + scrollBarWidth + 'px';
-		scrollEle.style.height = containerHeight + scrollBarWidth + 'px';
-		scrollEle.onscroll = function(e) {
-			const ev = window.event || e;
-			const targetEle = ev.target as HTMLElement;
-			const { updateSliderTop } = barRef.current as any;
-			updateSliderTop(targetEle.scrollTop);
-			is.function(onScroll) && onScroll(ev as any);
-		};
-		contentEle.style.width =
-			containerWidth - (!!withScrollBar && isDisplayBar ? scrollBarWidth : 0) + 'px';
-		// 待实现  container的通过mutationObserver改变  更新contentEle的height
+		const isDisplayBar = contentHeight > containerHeight; // 内容小于不显示侧边
+
+		if (!isDisplayBar) {
+			setHiddenBar(!isHiddenBar);
+		}
+
+		const widthThatDisplayBar = isDisplayBar ? scrollSliderWidth : 0;
+
+		// 更新内容撑起的高度
 		setContentHeight(cv.style2int(contentEle, 'height'));
-	}, [withScrollBar, onScroll]);
+
+		scrollEle.style.width = cv.style2int(containerEle, 'width') + widthThatDisplayBar + 'px';
+		scrollEle.style.height = containerHeight + widthThatDisplayBar + 'px';
+		scrollEle.onscroll = function(e) {
+			const ev: any = window.event || e;
+			const targetEle = ev.target as HTMLElement;
+			if (!!barRef.current) {
+				const { updateSliderTop } = barRef.current as any;
+				updateSliderTop(targetEle.scrollTop);
+			}
+			is.function(onScroll) && onScroll(ev);
+		};
+		contentEle.style.width = containerWidth - widthThatDisplayBar + 'px';
+		// 待实现  container的通过mutationObserver改变  更新contentEle的height
+	}, [onScroll, isHiddenBar]);
 
 	return (
 		<div ref={containerRef} {...nativeProps} style={containerStyle} className={containerCN}>
 			<div className={scrollCN} ref={scrollRef}>
 				<div ref={contentRef}>{children}</div>
 			</div>
-			{scrollBar}
+			{isHiddenBar ? null : scrollBar}
 		</div>
 	);
 };

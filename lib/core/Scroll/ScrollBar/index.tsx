@@ -15,11 +15,6 @@ import './style/index.scss';
 
 const prefix = 's-scrollBar';
 
-/**=================================================================================================
- *    滚动条 宽度默认为16
- *=================================================================================================*/
-export const scrollBarWidth = 16;
-
 interface ScrollBarTempProps extends SilentCommonAttr, HTMLAttributes<any> {
 	className?: any;
 	hoverDisplayScrollBar?: boolean;
@@ -27,8 +22,9 @@ interface ScrollBarTempProps extends SilentCommonAttr, HTMLAttributes<any> {
 	target?: ReactNode;
 	sliderWidth?: number;
 	mode?: 'hoverDisplay' | 'autoShrink' | 'normal';
-	readonly _contentHeight?: number;
+	readonly contentHeight?: number;
 	comptStyle?: Record<string, string | object>;
+	onDoubleClickToTop?: (e: Event) => boolean;
 }
 
 interface ScrollBarProps extends ScrollBarTempProps {
@@ -54,8 +50,9 @@ const presetProps = function(props: ScrollBarProps) {
 		'className',
 		'style',
 		'mode',
-		'_contentHeight',
-		'comptStyle'
+		'contentHeight',
+		'comptStyle',
+		'onDoubleClickToTop'
 	]);
 	sProps.customProps.size = handleSize(sProps.customProps.size!);
 	return sProps;
@@ -73,7 +70,7 @@ const presetProps = function(props: ScrollBarProps) {
 const ScrollBar: FC<ScrollBarProps> = function(props, refs) {
 	const { nativeProps, customProps } = presetProps(props);
 	const { containerCN, sliderCN } = presetClassName(customProps);
-	const { size, style, _contentHeight, comptStyle } = customProps;
+	const { size, style, contentHeight, comptStyle } = customProps;
 
 	const barRef = useRef(null);
 	const sliderRef = useRef(null);
@@ -90,19 +87,19 @@ const ScrollBar: FC<ScrollBarProps> = function(props, refs) {
 		() => ({
 			updateSliderTop: t => {
 				const { sliderEle, barHeight } = getBarHeight();
-				sliderEle.style.top = (t * barHeight) / _contentHeight! + 'px';
+				sliderEle.style.top = (t * barHeight) / contentHeight! + 'px';
 			}
 		}),
-		[_contentHeight]
+		[contentHeight]
 	);
 
 	useLayoutEffect(() => {
 		const { sliderEle, barHeight } = getBarHeight();
-		if (_contentHeight !== 0) {
-			sliderEle.style.height = (barHeight * barHeight) / _contentHeight! + 'px';
+		if (contentHeight !== 0) {
+			sliderEle.style.height = (barHeight * barHeight) / contentHeight! + 'px';
 		}
 		!!comptStyle && componentStyle(`#${prefix}`, comptStyle);
-	}, [_contentHeight, comptStyle]);
+	}, [contentHeight, comptStyle]);
 
 	const containerStyle = {
 		...accordType(size, 'Object', {}),
@@ -111,7 +108,7 @@ const ScrollBar: FC<ScrollBarProps> = function(props, refs) {
 
 	return (
 		<div id={prefix} ref={barRef} {...nativeProps} style={containerStyle} className={containerCN}>
-			<div ref={sliderRef} className={sliderCN} />
+			<div ref={sliderRef} className={sliderCN} onDoubleClick={() => {}} />
 		</div>
 	);
 };
