@@ -57,5 +57,8 @@
 		"webgradients",
 		"webkit",
 		"webp"
-	]
+	],
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	}
 }

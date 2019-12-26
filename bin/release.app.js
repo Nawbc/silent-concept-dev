@@ -38,10 +38,8 @@ const startBuild = function() {
 		console.log('[ ======================================================== ]');
 
 		reportResultIfSuccess(statsJson);
-		if (reportErrors(statsJson)) {
-			process.exit();
-		}
 		reportWarnings(statsJson);
+		if (reportErrors(statsJson)) process.exit();
 	});
 };
 startBuild();
